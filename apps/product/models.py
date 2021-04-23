@@ -5,7 +5,7 @@ from django.core.files import File
 from django.db import models
 
 from apps.vendor.models import Vendor
-from apps.userapp.models import CustomUser
+from django.contrib.auth.models import User
 
 class Category(models.Model):
     title = models.CharField(max_length=255)
@@ -62,7 +62,7 @@ class Product(models.Model):
 
 class ProductReview(models.Model):
     product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
-    user = models.ForeignKey(CustomUser, related_name='reviews', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='reviews', on_delete=models.CASCADE)
     stars = models.IntegerField()
     content = models.TextField(blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
