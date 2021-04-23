@@ -27,6 +27,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='vendor/login.html'), name='login'),
     path('vendors/', include('apps.vendor.urls')),
     path('cart/', include('apps.cart.urls')),
+    path('accounts/', include('allauth.urls')),
     path('', include('apps.core.urls')),
     path('', include('apps.product.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
