@@ -17,14 +17,14 @@
 
         <div class="field">
             <div class="control">
-                <button class="button is-dark is-uppercase">Sign up</button>
+                <button class="button is-dark  ">Sign up</button>
             </div>
         </div>
     </form> {% endcomment %}
 
     <hr>
 
-    <h2 class="subtitle">Already have an account?</h2>
-
-    <a href="{% url 'login' %}">Log in</a>
+    <div class="control mt-2">Already have an account?
+    <a href="{% url 'login' %}" class="btn btn-link">Log in</a>
+    </div>
 {% endblock %}

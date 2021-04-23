@@ -203,7 +203,7 @@ class Cart(object):
             
             <div class="field">
                 <div class="control">
-                    <button class="button is-dark mt-4 is-uppercase">Checkout</button>
+                    <button class="button is-dark mt-4  ">Checkout</button>
                 </div>
             </div>
         </div>
@@ -335,7 +335,7 @@ class Cart(object):
 
         <div class="field">
             <div class="control">
-                <button class="button is-dark is-uppercase">Save changes</button>
+                <button class="button is-dark  ">Save changes</button>
             </div>
         </div>
     </form>
