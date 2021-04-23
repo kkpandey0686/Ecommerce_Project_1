@@ -1,4 +1,3 @@
-
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -6,7 +5,6 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 from django.shortcuts import render, redirect, get_object_or_404
 
-# from .models import Vendor
 from apps.product.models import Product
 from .models import CustomUser
 from apps.vendor.models import Vendor
@@ -28,8 +26,8 @@ def signup(request):
             phone = form.cleaned_data['phone']
             address = form.cleaned_data['address']
             zipcode = form.cleaned_data['zipcode']
-
             role = data['role']
+
             user = User()
             user.username = username
             user.set_password(password)
@@ -55,7 +53,15 @@ def signup(request):
                 vendor.save()
 
             login(request, user)
+
+            if role=='VEN':
+                return redirect('vendor_admin')
+            
+            if role=='CUS':
+                return redirect('frontpage')
+
             return redirect('frontpage')
     else:
         form = RegisterForm()
+
     return render(request, 'userapp/signup.html', {'form': form})

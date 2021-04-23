@@ -2,13 +2,16 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
 
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit
+
 class RegisterForm(UserCreationForm):
     userChoice = (
-        ('VEN', 'vendor'),
-        ('CUS', 'customer'),
-        ('WHO', 'wholeseller'),
-        ('DEL', 'delivery'),
-        ('OTH', 'other'),
+        ('CUS', 'Customer'),
+        ('VEN', 'Vendor'),
+        ('WHO', 'Wholesaler'),
+        ('DEL', 'Delivery'),
+        # ('OTH', 'Other'),
     )
 
     role = forms.ChoiceField(choices=userChoice, required=False)
@@ -21,6 +24,13 @@ class RegisterForm(UserCreationForm):
     place = forms.CharField(max_length=255)
 
 
-    # class Meta:
-    #     model = User
-    #     fields = ("username", "password", "role", )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper(self)
+        self.helper.form_method = 'post'
+
+        for fieldname in ['username', 'password1', 'password2']:
+            self.fields[fieldname].help_text = None
+
+        self.helper.add_input(Submit('submit', 'Submit', css_class='btn-secondary'))

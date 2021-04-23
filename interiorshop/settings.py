@@ -31,7 +31,7 @@ STRIPE_PUB_KEY = 'pk_test_51HIHiuKBJV2qfWbD2gQe6aqanfw6Eyul5P02KeOuSR1UMuaV4TxEt
 STRIPE_SECRET_KEY = 'sk_test_51HIHiuKBJV2qfWbD4I9pAODack7r7r9LJOY65zSFx7jUUwgy2nfKEgQGvorv1p2xP7tgMsJ5N9EW7K1lBdPnFnyK00kdrS27cj'
 
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'vendor_admin'
+LOGIN_REDIRECT_URL = 'frontpage'
 LOGOUT_REDIRECT_URL = 'frontpage'
 
 SESSION_COOKIE_AGE = 86400
@@ -58,7 +58,8 @@ INSTALLED_APPS = [
     'apps.order',
     'apps.product',
     'apps.vendor',
-    'apps.userapp'
+    'apps.userapp',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [

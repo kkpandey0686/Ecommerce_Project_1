@@ -4,11 +4,11 @@ from django.contrib.auth.models import User
 # Create your models here.
 class CustomUser(models.Model):
     userChoice = (
-        ('VEN', 'vendor'),
-        ('CUS', 'customer'),
-        ('WHO', 'wholeseller'),
-        ('DEL', 'delivery'),
-        ('OTH', 'other'),
+        ('CUS', 'Customer'),
+        ('VEN', 'Vendor'),
+        ('WHO', 'Wholesaler'),
+        ('DEL', 'Delivery'),
+        # ('OTH', 'Other'),
     )
     user = models.OneToOneField(User, related_name='customUser', on_delete=models.CASCADE)
     role = models.CharField(max_length=3, choices=userChoice)
