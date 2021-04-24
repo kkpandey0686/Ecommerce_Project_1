@@ -9,11 +9,33 @@ from .models import Category, Product, ProductReview
 
 from apps.cart.cart import Cart
 
+from apps.userapp.distance import distance
+
 def search(request):
     query = request.GET.get('query', '')
     products = Product.objects.filter(Q(title__icontains=query) | Q(description__icontains=query))
 
-    return render(request, 'product/search.html', {'products': products, 'query': query})
+    lat_user = 19.2362
+    long_user = 73.1302
+
+    if request.user.is_authenticated:
+        lat_user = request.user.customUser.latitude
+        long_user = request.user.customUser.longitude
+    
+    distance_list =[]
+
+    for product in products:
+        lat_vendor = product.vendor.created_by.customUser.latitude
+        long_vendor = product.vendor.created_by.customUser.longitude
+        
+
+        d = distance(lat_user,lat_vendor,long_user,long_vendor)
+
+        t = (product,round(d))
+        distance_list.append(t)
+
+
+    return render(request, 'product/search.html', {'distance_list': distance_list ,'query': query})
 
 def product(request, category_slug, product_slug):
     cart = Cart(request)
@@ -28,7 +50,6 @@ def product(request, category_slug, product_slug):
             review_data.product = product
             review_data.user = request.user
             review_data.save()
-            print('REVIEW SAVED')
 
             return redirect('product', category_slug=category_slug, product_slug=product_slug)
     
@@ -58,6 +79,26 @@ def product(request, category_slug, product_slug):
 def category(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
 
-    return render(request, 'product/category.html', {'category': category})
+    lat_user = 19.2362
+    long_user = 73.1302
+
+    if request.user.is_authenticated:
+        lat_user = request.user.customUser.latitude
+        long_user = request.user.customUser.longitude
+    
+    distance_list =[]
+
+    for product in category.products.all():
+        lat_vendor = product.vendor.created_by.customUser.latitude
+        long_vendor = product.vendor.created_by.customUser.longitude
+        
+
+        d = distance(lat_user,lat_vendor,long_user,long_vendor)
+
+        t = (product,round(d))
+        distance_list.append(t)
+        
+
+    return render(request, 'product/category.html',{'distance_list':distance_list})
 
 

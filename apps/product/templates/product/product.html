@@ -10,11 +10,11 @@
         </figure>
     {% endif %}
 
-    <h1 class="title">{{ product.title }}, ${{ product.price }}</h1>
+    <h1 class="title">{{ product.title }}, ₹{{ product.price }}</h1>
 
     <p class="mb-6"><span class="tag is-dark">{{ product.vendor.name }}</span></p>
 
-    <p>{{ product.description }}</p>
+    <p class="is-size-4">{{ product.description }}</p>
 
     <hr>
 
@@ -59,17 +59,22 @@
     <br>
     <br>
     <br>
+    <br>
+    <br>
+    <br>
 
     {% if request.user.is_authenticated %}
     {% if request.user.customUser.role == "CUS" %}
         <form method="post" action="." >
             {% csrf_token %}
 
-            {{ review_form.as_ul }}
+            <h1 class="is size-2"> Review Product</h1>
+            <div class="is-size-3"><span class="is-size-6" >{{ review_form.stars }}</span> ★</div>
+            <div>{{ review_form.content }}</div>
 
             <div class="field">
                 <div class="control">
-                    <button class="btn btn-secondary bt-lg mt-5" name="write_review">Submit Review</a>
+                    <button class="btn btn-dark  mt-3" name="write_review">Post Review</a>
                 </div>
             </div>
         </form>
@@ -79,18 +84,23 @@
     <br>
     <br>
     <br>
+    <br>
+    <br>
+    <br>
 
 
-    <h1 class="display-5"> Reviews </h1>
+    <h1 class="is size-2"> Reviews </h1>
     <br>
     <br>
 
     {% if review_list %}
         
         {% for review in review_list %}
-            <h3 class="display-6">Stars: {{review.stars}}    User: {{review.user}} </h3>
-            <h3 class="display-6">{{review.content}}</h3>
-            <div class="border-bottom"></div>
+            {% comment %} <p class="mb-6"></p> {% endcomment %}
+
+            <h3 class="is-capitalised is-size-4">★{{review.stars}} <span class="tag is-dark ml-3 is-size-6">{{review.user }}</span>  </h3>
+            <h3 class="is-capitalised is-size-4">{{review.content}}</h3>
+            <div class="border-bottom "></div>
             <br>
         {% endfor %}
  

@@ -26,15 +26,15 @@
                                     </figure>
                                 </td>
                                 <td>
-                                    <a href="{% url 'product' item.product.category.slug item.product.slug %}">{{ item.product.title }}</a>
+                                    <a class="is-size-5"href="{% url 'product' item.product.category.slug item.product.slug %}">{{ item.product.title }}</a>
                                 </td>
                                 <td>
-                                    {{ item.quantity }}
+                                    <span class="is-size-5">{{ item.quantity }}</span>  
 
-                                    <a href="?change_quantity={{ item.id }}&quantity=-1">-</a>
-                                    <a href="?change_quantity={{ item.id }}&quantity=1">+</a>
+                                    <a class="btn btn-sm btn-dark" href="?change_quantity={{ item.id }}&quantity=-1">-</a>
+                                    <a class="btn btn-sm btn-dark " href="?change_quantity={{ item.id }}&quantity=1">+</a>
                                 </td>
-                                <td>${{ item.total_price }}</td>
+                                <td class="is-size-5">₹{{ item.total_price }}</td>
                                 <td><a href="?remove_from_cart={{ item.id }}" class="delete">Remove</a></td>
                             </tr>
                         {% endfor %}
@@ -43,9 +43,9 @@
                     <tfoot>
                         <tr>
                             <td></td>
-                            <td><strong>Total cost</strong></td>
-                            <td><strong>{{ cart|length}}</strong></td>
-                            <td colspan="2"><strong>${{ cart.get_total_cost }}</strong></td>
+                            <td class="is-size-5"><strong>Total cost</strong></td>
+                            <td class="is-size-5"><strong>{{ cart|length}}</strong></td>
+                            <td class="is-size-5" colspan="2"><strong>₹{{ cart.get_total_cost }}</strong></td>
                         </tr>
                     </tfoot>
                 </table>
