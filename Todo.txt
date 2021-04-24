@@ -1,5 +1,4 @@
 - Login using OTP verification(Email/Phone) everytime
-- Input location on registration page (Try to enable with google API) (what is difference between registration an signup page)?
 - Check if product is in stock or out of stock
 - Location distance filter for each shop
 - "Modification" user can only buy that many items which are in the stock

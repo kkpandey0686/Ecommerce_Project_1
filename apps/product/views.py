@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 
-from .forms import AddToCartForm, WriteReviewForm
+from .forms import AddToCartForm, WriteReviewForm, MaxDistanceForm
 from .models import Category, Product, ProductReview
 
 from apps.cart.cart import Cart
@@ -17,6 +17,16 @@ def search(request):
 
     lat_user = 19.2362
     long_user = 73.1302
+    max_distance = 33
+
+    if request.method=='POST':
+        max_distance_form = MaxDistanceForm(request.POST)
+
+        if max_distance_form.is_valid():
+            max_distance = max_distance_form.cleaned_data['max_distance']
+
+    else:
+        max_distance_form = MaxDistanceForm()
 
     if request.user.is_authenticated:
         lat_user = request.user.customUser.latitude
@@ -35,7 +45,7 @@ def search(request):
         distance_list.append(t)
 
 
-    return render(request, 'product/search.html', {'distance_list': distance_list ,'query': query})
+    return render(request, 'product/search.html', {'distance_list': distance_list ,'query': query, 'max_distance': max_distance})
 
 def product(request, category_slug, product_slug):
     cart = Cart(request)

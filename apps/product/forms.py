@@ -7,6 +7,9 @@ from .models import ProductReview
 class AddToCartForm(forms.Form):
     quantity = forms.IntegerField()
 
+class MaxDistanceForm(forms.Form):
+    max_distance = forms.IntegerField()
+
 class WriteReviewForm(ModelForm):
     class Meta:
         model = ProductReview
