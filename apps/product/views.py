@@ -9,6 +9,8 @@ from .models import Category, Product, ProductReview
 
 from apps.cart.cart import Cart
 
+import copy
+
 from apps.userapp.distance import distance
 
 def search(request):
@@ -48,6 +50,10 @@ def search(request):
     return render(request, 'product/search.html', {'distance_list': distance_list ,'query': query, 'max_distance': max_distance})
 
 def product(request, category_slug, product_slug):
+    # if request.user.customUser.role not in {'VEN', 'CUS'}:
+    #     form = RegisterForm()
+    #     return render(request, 'core/accessdenied.html', {'form': form})
+
     cart = Cart(request)
 
     product = get_object_or_404(Product, category__slug=category_slug, slug=product_slug)
@@ -68,9 +74,23 @@ def product(request, category_slug, product_slug):
         form = AddToCartForm(request.POST)
 
         if form.is_valid():
-            quantity = form.cleaned_data['quantity']
-            cart.add(product_id=product.id, quantity=quantity, update_quantity=False)
-            messages.success(request, 'The product was added to the cart')
+            if product.wholesale and request.user.customUser.role=='CUS':
+                messages.success(request, "This product is only available for vendors")
+            else:
+                quantity = form.cleaned_data['quantity']
+                if request.user.customUser.role=='VEN':
+                    if product.wholesale:
+                        if quantity>product.quantity:
+                            messages.success(request, "Quantity greater than stock")
+                        else:
+                            cart.add(product_id=product.id, quantity=quantity, update_quantity=True)
+                            messages.success(request, 'The product was added to the cart')   
+                    else:
+                        messages.success(request, "You are not authorized for this transaction")
+                        return render(request, 'core/accessdenied.html', {'form': form})
+                else:
+                    cart.add(product_id=product.id, quantity=quantity, update_quantity=True)
+                    messages.success(request, 'The product was added to the cart')
 
             return redirect('product', category_slug=category_slug, product_slug=product_slug)
     else:
@@ -84,7 +104,7 @@ def product(request, category_slug, product_slug):
 
     review_list = ProductReview.objects.filter(product=product)
 
-    return render(request, 'product/product.html', {'form': form, 'product': product, 'similar_products': similar_products, 'review_form':review_form, 'review_list': review_list})
+    return render(request, 'product/product.html', {'form': form, 'product': product, 'quantity':product.quantity,'similar_products': similar_products, 'review_form':review_form, 'review_list': review_list})
 
 def category(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)

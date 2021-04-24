@@ -11,7 +11,11 @@ from .forms import ProductForm
 
 @login_required
 def vendor_admin(request):
-    if request.user.customUser.role!='VEN':
+    if request.user.customUser.verified is False:
+        form = RegisterForm()
+        return render(request, 'core/accessdenied.html', {'form': form})
+
+    if request.user.customUser.role not in {'VEN', 'WHO'}:
         form = RegisterForm()
         return render(request, 'core/accessdenied.html', {'form': form})
 
@@ -36,13 +40,22 @@ def vendor_admin(request):
 
 @login_required
 def add_product(request):
+    if request.user.customUser.role not in {'VEN', 'WHO'}:
+        form = RegisterForm()
+        return render(request, 'core/accessdenied.html', {'form': form})
+
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
 
         if form.is_valid():
             product = form.save(commit=False)
             product.vendor = request.user.vendor
-            product.slug = slugify(product.title)
+            additive = ""
+            if request.user.customUser.role=='WHO':
+                product.wholesale = True
+                additive = "w"
+            product.slug = slugify(str(product.title)+additive)
+            
             product.save()
 
             return redirect('vendor_admin')

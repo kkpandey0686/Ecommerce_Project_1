@@ -30,6 +30,7 @@
                     <tr>
                         <th>Title</th>
                         <th>Price</th>
+                        <th>Stock</th>
                     </tr>
                 </thead>
 
@@ -38,6 +39,7 @@
                         <tr>
                             <td><a href="{% url 'product' product.category.slug product.slug %}">{{ product.title }}</a></td>
                             <td>₹{{ product.price }}</td>
+                            <td>{{product.quantity}}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -55,7 +57,8 @@
                 <div class="{% if order.fully_paid %}has-background-success-light{% else %}has-background-info-light{% endif %} mb-2 p-4">
                     <div class="columns is-multiline">
                         <div class="column is-6">
-                            <h3 class="is-size-4">#{{ order.id }} - {{ order.first_name }} {{ order.last_name }}</h3>
+                            <h3 class="is-size-4">#{{ order.id }} - {{ order.first_name }} {{ order.last_name }} {{order.status}}</h3>
+                            <a class"btn btn-dark is-family-monospace" href="order/update_status/{{order.id}}/"> Update Status</a>
                         </div>
     
                         <div class="column is-12">

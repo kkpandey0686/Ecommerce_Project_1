@@ -53,13 +53,13 @@ def signup(request):
             user.save()
             customuser.save()
 
-            if role=='VEN':
-                vendor = Vendor.objects.create(name='default', created_by=user)
+            if role=='VEN' or role=='WHO':
+                vendor = Vendor.objects.create(name=first_name, created_by=user)
                 vendor.save()
 
             login(request, user)
 
-            if role=='VEN':
+            if role=='VEN' or role=='WHO':
                 return redirect('vendor_admin')
             
             if role=='CUS':
@@ -70,3 +70,33 @@ def signup(request):
         form = RegisterForm()
 
     return render(request, 'userapp/signup.html', {'form': form})
+
+
+@login_required
+def user_orders(request):
+    if request.user.customUser.role!='CUS':
+        form = RegisterForm()
+        return render(request, 'core/accessdenied.html', {'form': form})
+
+    user = request.user
+    orders = user.orders.all()
+
+    data = []
+    for order in orders:
+        price = 0
+        quantity = 0
+        total = 0
+
+        dic =[]
+        dic.append(order)
+        temp = []
+        for item in order.items.all():
+            print(item)
+            price+= item.price
+            quantity+= item.quantity
+            total += item.get_total_price()
+            temp.append([item.product.title, price, quantity, total])
+        dic.append(temp) 
+        data.append(dic)
+
+    return render(request, 'userapp/userAdmin.html', {'data':data})

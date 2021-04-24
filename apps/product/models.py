@@ -24,10 +24,12 @@ class Product(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255)
     description = models.TextField(blank=True, null=True)
+    quantity = models.FloatField(default=1.0)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     date_added = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='uploads/', blank=True, null=True)
     thumbnail = models.ImageField(upload_to='uploads/', blank=True, null=True)
+    wholesale = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-date_added']

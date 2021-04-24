@@ -10,6 +10,10 @@ from .forms import CheckoutForm
 from apps.order.utilities import checkout, notify_customer, notify_vendor
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from apps.product.models import Product
+from apps.product.models import Category
+
+import copy
 
 @login_required
 def cart_detail(request):
@@ -17,22 +21,32 @@ def cart_detail(request):
         return render(request, 'core/accessdenied.html')
 
     cart = Cart(request)
+    cartBasket = cart.cart
+    print(cartBasket)
 
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
 
-        if form.is_valid():
-            stripe.api_key = settings.STRIPE_SECRET_KEY
+        checkQuantity = True
+        cartClone = copy.deepcopy(cartBasket)
+        wholeSaleFlag = False
 
-            stripe_token = form.cleaned_data['stripe_token']
+        for productID in cartBasket:
+            product = Product.objects.get(id=productID)
+            if product.wholesale:
+                wholeSaleFlag = True
+            available_quantity = product.quantity
+            if cartBasket[productID]['quantity']>available_quantity:
+                checkQuantity = False
+      
+        if checkQuantity is False:
+            print("exceeded")
+            messages.success(request,'Product quantity exceeded')
+            return render(request, 'cart/cart.html', {'form': form, 'stripe_pub_key': settings.STRIPE_PUB_KEY})
 
+        if form.is_valid() and checkQuantity is True:
             try:
-                # charge = stripe.Charge.create(
-                #     amount=int(cart.get_total_cost() * 100),
-                #     currency='USD',
-                #     description='Charge from Interiorshop',
-                #     source=stripe_token
-                # )
+
                 user = request.user
                 first_name = user.first_name
                 last_name = user.last_name
@@ -43,18 +57,49 @@ def cart_detail(request):
 
                 print("user details")
 
-                order = checkout(request, first_name, last_name, email, address, zipcode, "place", phone, cart.get_total_cost())
+                if wholeSaleFlag and request.user.customUser.role=='CUS':
+                    messages.success(request, "This product is only available for vendors")
+                    return render(request, 'core/accessdenied.html')
+                else:
+                    if request.user.customUser.role=='VEN':
+                        if wholeSaleFlag:
+                            for productID in cartBasket:
+                                product = Product.objects.get(id=productID)
+                                # product.quantity-=cartBasket[productID]['quantity']
+                                # product.save()
+                                vendorProd = Product()
+                                vendorProd.title = product.title
+                                vendorProd.price = product.price
+                                vendorProd.image = product.image
+                                vendorProd.slug = slugify(product.title)
+                                vendorProd.category = Category.objects.get(id=product.category.id)
+                                vendorProd.description = product.description
+                                vendorProd.quantity = cartBasket[productID]['quantity']
+                                vendorProd.vendor = request.user.vendor
+                                vendorProd.wholesale = False
+                                vendorProd.save()
+                                print("object added")
+                        else:
+                            messages.success(request, "You are not authorized for this transaction")
+                            return render(request, 'core/accessdenied.html')
+                    else:
+                        order = checkout(request, first_name, last_name, email, address, zipcode, "place", phone, cart.get_total_cost(), user)
 
-                print(order)
-                cart.clear()
+                        print(order)
+                        cart.clear()
 
-                notify_customer(order)
-                notify_vendor(order)
-
-                return redirect('success')
+                        # notify_customer(order)
+                        # notify_vendor(order)
             except Exception as e:
                 messages.error(request, 'There was something wrong with the payment')
                 print("exception in payment", e)
+            else:
+                for productID in cartClone:
+                    product = Product.objects.get(id=productID)
+                    product.quantity -= cartClone[productID]['quantity']
+                    product.save()
+
+                return redirect('success')
     else:
         form = CheckoutForm()
 

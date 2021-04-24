@@ -2,6 +2,7 @@ from django.db import models
 
 from apps.product.models import Product
 from apps.vendor.models import Vendor
+from django.contrib.auth.models import User
 
 class Order(models.Model):
     first_name = models.CharField(max_length=100)
@@ -13,7 +14,9 @@ class Order(models.Model):
     phone = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     paid_amount = models.DecimalField(max_digits=8, decimal_places=2)
+    buyer = models.ForeignKey(User, null=True, blank=True, related_name='orders', on_delete=models.CASCADE)
     vendors = models.ManyToManyField(Vendor, related_name='orders')
+    status = models.IntegerField(default=0)
 
     class Meta:
         ordering = ['-created_at']
