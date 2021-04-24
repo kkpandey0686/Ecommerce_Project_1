@@ -56,7 +56,7 @@
                     {% endif%}
                     
                     {% if request.user.customUser.role == "VEN" %}
-                        <a href="{% url 'vendor_admin' %}" class="navbar-item is-family-monospace is-capitalized">Vendor Panel</a>
+                        <a href="{% url 'vendor_admin' %}" class="navbar-item is-size-5 is-family-monospace is-capitalized">Vendor Panel</a>
                     {% endif %}
 
 
@@ -74,9 +74,11 @@
                         
                     <a href="{% url 'contact' %}" class="navbar-item is-size-5  is-family-monospace is-capitalized">Contact</a>
 
-                    <div class="navbar-item is-size-5  is-family-monospace is-capitalized">
-                        <a href="{% url 'cart' %}" class="button is-dark is-capitalised is-size-5 is-family-monospace">Cart{% if cart %} ({{ cart|length }}){% endif %}</a>
-                    </div>
+                    {% if request.user.customUser.role != "VEN" %}
+                        <div class="navbar-item is-size-5  is-family-monospace is-capitalized">
+                            <a href="{% url 'cart' %}" class="button is-dark is-capitalised is-size-5 is-family-monospace">Cart{% if cart %} ({{ cart|length }}){% endif %}</a>
+                        </div>
+                    {% endif%}
                 </div>
             </div>
         </nav>

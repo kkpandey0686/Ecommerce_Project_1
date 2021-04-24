@@ -6,22 +6,26 @@
     <div class="box">
         <h1 class="title">Vendor admin - {{ vendor.name }}</h1>
 
-        <strong>My balance: </strong>${{ vendor.get_balance }}<br>
-        <strong>My paid amount: </strong>${{ vendor.get_paid_amount }}
-
+        <div class="is-size-5"> 
+            <strong >My balance: ₹{{ vendor.get_balance }}</strong><br>
+            <strong >My paid amount: ₹{{ vendor.get_paid_amount }}</strong>
+        </div>
         <hr>
 
-        <a href="{% url 'edit_vendor' %}" class="button is-info  ">Edit</a>
-        <a href="{% url 'logout' %}" class="button is-danger  ">Log out</a>
+        <div >
+            <a href="{% url 'edit_vendor' %}" class="button is-dark is-size-5 is-family-monospace">Edit</a>
+            <a href="{% url 'logout' %}" class="button is-dark is-size-5 is-family-monospace">Log out</a>
+        </div>
+
     </div>
 
     <div class="box">
         <h2 class="is-size-3 mb-4">My products</h2>
 
-        <a href="{% url 'add_product' %}" class="button is-dark   mb-6">Add product</a>
+        <a href="{% url 'add_product' %}" class="button is-dark is-size-5 is-family-monospace mb-6">Add product</a>
 
         {% if products %}
-            <table class="table is-fullwidth">
+            <table class="table is-fullwidth is-size-5">
                 <thead>
                     <tr>
                         <th>Title</th>
@@ -33,7 +37,7 @@
                     {% for product in products %}
                         <tr>
                             <td><a href="{% url 'product' product.category.slug product.slug %}">{{ product.title }}</a></td>
-                            <td>${{ product.price }}</td>
+                            <td>₹{{ product.price }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -77,10 +81,10 @@
                                         {% if item.vendor == request.user.vendor %}
                                             <tr>
                                                 <td>{{ item.product.title }}</td>
-                                                <td>${{ item.product.price }}</td>
+                                                <td>₹{{ item.product.price }}</td>
                                                 <td>{{ item.quantity }}</td>
                                                 <td>{{ item.vendor_paid|yesno:"Yes,No" }}</td>
-                                                <td>${{ item.get_total_price }}</td>
+                                                <td>₹{{ item.get_total_price }}</td>
                                             </tr>
                                         {% endif %}
                                     {% endfor %}
