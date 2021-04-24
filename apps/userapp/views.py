@@ -27,6 +27,8 @@ def signup(request):
             address = form.cleaned_data['address']
             zipcode = form.cleaned_data['zipcode']
             role = data['role']
+            latitude = data['latitude']
+            longitude = data['longitude']
 
             user = User()
             user.username = username
@@ -34,19 +36,22 @@ def signup(request):
             user.first_name = first_name
             user.last_name = last_name
             user.email = email
-            user.save()
+            
 
-            customUser = CustomUser()
-            customUser.user = user
-            customUser.role =role
-            customUser.contact = phone
-            customUser.address = address
-            customUser.zipcode = zipcode
+            customuser = CustomUser()
+            customuser.user = user
+            customuser.role =role
+            customuser.contact = phone
+            customuser.address = address
+            customuser.zipcode = zipcode
+            customuser.latitude = latitude
+            customuser.longitude = longitude
         
             #generate otp
             #customUser.otp = otp
             #sendsms(otp)
-            customUser.save()
+            user.save()
+            customuser.save()
 
             if role=='VEN':
                 vendor = Vendor.objects.create(name='default', created_by=user)

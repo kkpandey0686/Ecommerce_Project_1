@@ -6,10 +6,33 @@
 
 {% block content %}
     <h1 class="title">Create an User account</h1>
-
-
-
+    {% csrf_token %}
     {% crispy form form.helper %}
+{% comment %} 
+    <div class="is-size-5">
+        {{form.username}}
+        {{form.role}}
+    </div>
+    <div class="is-size-5 pb-1 pt-1">
+        {{form.password}}
+        {{form.password_confirmation}}
+    </div>
+    <div class="is-size-5 pb-1 pt-1">
+        {{form.firstname}}
+        {{form.lastname}}
+    </div>
+    <div class="is-size-5 pb-1 pt-1">
+        {{form.phone}}
+        {{form.email}}
+    </div>
+    <div class="is-size-5 pb-1 pt-1">
+        {{form.latitude}}
+        {{form.longitude}}
+    </div>
+    <div class="is-size-5 pb-1 pt-1">
+        {{form.zipcode}}
+        {{form.place}}
+    </div> {% endcomment %}
     
     {% comment %} <form method="post" action=".">
         {% csrf_token %}

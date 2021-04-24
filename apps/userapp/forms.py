@@ -21,6 +21,8 @@ class RegisterForm(UserCreationForm):
     phone = forms.CharField(max_length=255)
     address = forms.CharField(max_length=255)
     zipcode = forms.CharField(max_length=255)
+    latitude = forms.FloatField()
+    longitude = forms.FloatField()
     place = forms.CharField(max_length=255)
 
 
@@ -33,4 +35,4 @@ class RegisterForm(UserCreationForm):
         for fieldname in ['username', 'password1', 'password2']:
             self.fields[fieldname].help_text = None
 
-        self.helper.add_input(Submit('submit', 'Submit', css_class='btn-secondary'))
+        self.helper.add_input(Submit('submit', 'Submit', css_class='btn-dark'))
